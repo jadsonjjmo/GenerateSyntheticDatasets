@@ -31,6 +31,30 @@ public class GeneratorTest {
     }
 
     @Test
+    public void linearOperationsTest04() {
+        String expression = "{10}*({1.0}-{2.0})+{20}";
+        double result = Double.parseDouble(Generator.solve(expression));
+
+        Assert.assertEquals(10.0, result, 0);
+    }
+
+    @Test
+    public void linearOperationsTest05() {
+        String expression = "{10}*({1.0}*{2.0})+{20}";
+        double result = Double.parseDouble(Generator.solve(expression));
+
+        Assert.assertEquals(40.0, result, 0);
+    }
+
+    @Test
+    public void linearOperationsTest06() {
+        String expression = "{10}*({1.0}/{2.0})+{20}";
+        double result = Double.parseDouble(Generator.solve(expression));
+
+        Assert.assertEquals(25.0, result, 0);
+    }
+
+    @Test
     public void quadraticOperationsTest01() {
         String expression = "{10}*{1.0}^{2}+{20}";
         double result = Double.parseDouble(Generator.solve(expression));

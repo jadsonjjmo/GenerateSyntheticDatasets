@@ -93,7 +93,7 @@ public class Generator {
 
 
     public static String normalizeExpression(String expression, String[] attributes) {
-        final long randomLimit = (Long) config.getOrDefault("random_limit", 10);
+        final long randomLimit = (Long) config.getOrDefault("random_limit", 10L);
         expression = expression.replace(" ", "");
         Random random = new Random(13L);
 
