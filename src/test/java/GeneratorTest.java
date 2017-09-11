@@ -7,7 +7,7 @@ import org.junit.Test;
 public class GeneratorTest {
 
     @Test
-    public void linearOperationsTest01(){
+    public void linearOperationsTest01() {
         String expression = "{10}*{1}+{20}";
         double result = Double.parseDouble(Generator.solve(expression));
 
@@ -15,7 +15,7 @@ public class GeneratorTest {
     }
 
     @Test
-    public void linearOperationsTest02(){
+    public void linearOperationsTest02() {
         String expression = "{10}*{2.0}+{20}";
         double result = Double.parseDouble(Generator.solve(expression));
 
@@ -23,7 +23,7 @@ public class GeneratorTest {
     }
 
     @Test
-    public void linearOperationsTest03(){
+    public void linearOperationsTest03() {
         String expression = "{10}*({1.0}+{2.0})+{20}";
         double result = Double.parseDouble(Generator.solve(expression));
 
@@ -31,7 +31,7 @@ public class GeneratorTest {
     }
 
     @Test
-    public void quadraticOperationsTest01(){
+    public void quadraticOperationsTest01() {
         String expression = "{10}*{1.0}^{2}+{20}";
         double result = Double.parseDouble(Generator.solve(expression));
 
@@ -39,7 +39,7 @@ public class GeneratorTest {
     }
 
     @Test
-    public void quadraticOperationsTest02(){
+    public void quadraticOperationsTest02() {
         String expression = "{10}*{2.0}^{2}+{20}";
         double result = Double.parseDouble(Generator.solve(expression));
 
@@ -47,7 +47,7 @@ public class GeneratorTest {
     }
 
     @Test
-    public void quadraticOperationsTest03(){
+    public void quadraticOperationsTest03() {
         String expression = "{10}*({1.0}+{2.0})^{2}+{20}";
         double result = Double.parseDouble(Generator.solve(expression));
 
@@ -55,7 +55,7 @@ public class GeneratorTest {
     }
 
     @Test
-    public void logOperationsTest01(){
+    public void logOperationsTest01() {
         String expression = "{10}*l{1.0}+{20}";
         double result = Double.parseDouble(Generator.solve(expression));
 
@@ -63,7 +63,7 @@ public class GeneratorTest {
     }
 
     @Test
-    public void logOperationsTest02(){
+    public void logOperationsTest02() {
         String expression = "{10}*l{2.0}+{20}";
         double result = Double.parseDouble(Generator.solve(expression));
 
@@ -71,7 +71,7 @@ public class GeneratorTest {
     }
 
     @Test
-    public void logOperationsTest03(){
+    public void logOperationsTest03() {
         String expression = "{10}*l({1.0}+{2.0})+{20}";
         double result = Double.parseDouble(Generator.solve(expression));
 
@@ -79,7 +79,7 @@ public class GeneratorTest {
     }
 
     @Test
-    public void exponentialOperationsTest01(){
+    public void exponentialOperationsTest01() {
         String expression = "{10}^{1.0}+{20}";
         double result = Double.parseDouble(Generator.solve(expression));
 
@@ -87,7 +87,7 @@ public class GeneratorTest {
     }
 
     @Test
-    public void exponentialOperationsTest02(){
+    public void exponentialOperationsTest02() {
         String expression = "{10}^{2.0}+{20}";
         double result = Double.parseDouble(Generator.solve(expression));
 
@@ -95,11 +95,38 @@ public class GeneratorTest {
     }
 
     @Test
-    public void exponentialOperationsTest03(){
+    public void exponentialOperationsTest03() {
         String expression = "{10}^({1.0}+{2.0})+{20}";
         double result = Double.parseDouble(Generator.solve(expression));
 
         Assert.assertEquals(1020.0, result, 0);
+    }
+
+    @Test
+    public void approximatedOperationsTest01() {
+        String expression = "{10}*{1.0}+{rand}";
+        expression = Generator.normalizeExpression(expression, new String[]{"1.0", "2.0"});
+        double result = Double.parseDouble(Generator.solve(expression));
+
+        Assert.assertEquals(10.0, result, 10);
+    }
+
+    @Test
+    public void approximatedOperationsTest02() {
+        String expression = "{10}*{2.0}+{rand}";
+        expression = Generator.normalizeExpression(expression, new String[]{"1.0", "2.0"});
+        double result = Double.parseDouble(Generator.solve(expression));
+
+        Assert.assertEquals(20.0, result, 10);
+    }
+
+    @Test
+    public void approximatedOperationsTest03() {
+        String expression = "{10}*([0]+[1])+{rand}";
+        expression = Generator.normalizeExpression(expression, new String[]{"1.0", "2.0"});
+        double result = Double.parseDouble(Generator.solve(expression));
+
+        Assert.assertEquals(30.0, result, 10);
     }
 
 

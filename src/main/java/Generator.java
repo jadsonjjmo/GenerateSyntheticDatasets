@@ -4,6 +4,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.*;
+import java.util.Random;
 import java.util.Stack;
 
 /**
@@ -12,16 +13,15 @@ import java.util.Stack;
 public class Generator {
 
     private static JSONParser jsonParser = new JSONParser();
-    private static JSONObject config;
+    private static JSONObject config = new JSONObject();
 
     public static void main(String[] args) {
 
-//        if (args.length != 1) {
-//            System.err.println("Please enter the following parameters: [CONFIG FILE]");
-//            System.exit(1);
-//        }
-//        final String configFile = args[0];
-        final String configFile = "config.json";
+        if (args.length != 1) {
+            System.err.println("Please enter the following parameters: [CONFIG FILE]");
+            System.exit(1);
+        }
+        final String configFile = args[0];
 
         try {
             config = (JSONObject) jsonParser.parse(new FileReader(configFile));
@@ -35,8 +35,7 @@ public class Generator {
             System.exit(1);
         }
 
-//        generateNewDataset();
-        System.out.println(getNewAttributes("1\t1"));
+        generateNewDataset();
     }
 
 
@@ -94,7 +93,9 @@ public class Generator {
 
 
     public static String normalizeExpression(String expression, String[] attributes) {
+        final long randomLimit = (Long) config.getOrDefault("random_limit", 10);
         expression = expression.replace(" ", "");
+        Random random = new Random(13L);
 
         while (expression.contains("[")) {
             final int indexStart = expression.indexOf("[");
@@ -102,6 +103,10 @@ public class Generator {
             final String indexOfAttribute = expression.substring(indexStart + 1, indexEnd);
             final String attributeByIndex = attributes[Integer.parseInt(indexOfAttribute)];
             expression = expression.replace("[" + indexOfAttribute + "]", "{" + attributeByIndex + "}");
+        }
+
+        while (expression.contains("rand")) {
+            expression = expression.replaceFirst("rand", String.valueOf(random.nextInt((int) (randomLimit))));
         }
 
         return expression;
@@ -145,7 +150,6 @@ public class Generator {
                     int indexEnd;
                     String numberString;
                     double number1;
-                    double number2;
 
                     switch (character) {
                         case 'l':
@@ -189,7 +193,7 @@ public class Generator {
     private static void solveOperation(Stack<Double> stackNumbers, Stack<Character> stackOperators, char character) {
         double number2;
         double number1;
-        while (!stackOperators.empty() && containsPriorityOper(character, stackOperators.peek())) {
+        while (!stackOperators.empty() && isPriority(character, stackOperators.peek())) {
             number2 = stackNumbers.pop();
             number1 = stackNumbers.pop();
             stackNumbers.push(executeOperation(number1, number2, stackOperators.pop()));
@@ -197,7 +201,7 @@ public class Generator {
         stackOperators.push(character);
     }
 
-    private static boolean containsPriorityOper(char atualOperator, char operatorToCompare) {
+    private static boolean isPriority(char atualOperator, char operatorToCompare) {
         switch (atualOperator) {
             case '*':
             case '/':
