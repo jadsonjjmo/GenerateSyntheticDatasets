@@ -12,7 +12,7 @@ import java.util.Stack;
  */
 public class Generator {
 
-    private static JSONParser jsonParser = new JSONParser();
+    private static final JSONParser jsonParser = new JSONParser();
     private static JSONObject config = new JSONObject();
 
     public static void main(String[] args) {
@@ -39,7 +39,7 @@ public class Generator {
     }
 
 
-    public static void generateNewDataset() {
+    private static void generateNewDataset() {
         final String originDataset = (String) config.getOrDefault("origin_dataset", "origin_dataset.csv");
         final String targetDataset = (String) config.getOrDefault("target_dataset", "target_dataset.csv");
 
@@ -71,7 +71,7 @@ public class Generator {
     }
 
 
-    public static String getNewAttributes(String line) {
+    private static String getNewAttributes(String line) {
 
         final String valueSeparator = (String) config.getOrDefault("separator", "\t");
         final JSONArray reduntantAttributes = (JSONArray) config.getOrDefault("redundant_attributes", new JSONArray());
@@ -93,9 +93,8 @@ public class Generator {
 
 
     public static String normalizeExpression(String expression, String[] attributes) {
-        final long randomLimit = (Long) config.getOrDefault("random_limit", 10L);
         expression = expression.replace(" ", "");
-        Random random = new Random(13L);
+        Random random = new Random();
 
         while (expression.contains("[")) {
             final int indexStart = expression.indexOf("[");
@@ -106,14 +105,18 @@ public class Generator {
         }
 
         while (expression.contains("rand")) {
-            expression = expression.replaceFirst("rand", String.valueOf(random.nextInt((int) (randomLimit))));
+            final int indexRand = expression.indexOf("rand");
+            final int indexStart = expression.indexOf("{", indexRand);
+            final int indexEnd = expression.indexOf("}", indexRand);
+            final int randomLimit = Integer.parseInt(expression.substring(indexStart + 1, indexEnd));
+            expression = expression.replaceFirst("rand\\{" + randomLimit + "}", String.valueOf(random.nextInt(randomLimit)));
         }
 
         return expression;
     }
 
 
-    public static String solveByPriority(String expression) {
+    private static String solveByPriority(String expression) {
         if (expression.contains("(")) {
             final int indexStart = expression.indexOf("(");
             int indexEnd = expression.indexOf(")");

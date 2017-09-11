@@ -128,7 +128,7 @@ public class GeneratorTest {
 
     @Test
     public void approximatedOperationsTest01() {
-        String expression = "{10}*{1.0}+{rand}";
+        String expression = "{10}*{1.0}+{rand{10}}";
         expression = Generator.normalizeExpression(expression, new String[]{"1.0", "2.0"});
         double result = Double.parseDouble(Generator.solve(expression));
 
@@ -137,7 +137,7 @@ public class GeneratorTest {
 
     @Test
     public void approximatedOperationsTest02() {
-        String expression = "{10}*{2.0}+{rand}";
+        String expression = "{10}*{2.0}+{rand{10}}";
         expression = Generator.normalizeExpression(expression, new String[]{"1.0", "2.0"});
         double result = Double.parseDouble(Generator.solve(expression));
 
@@ -146,7 +146,7 @@ public class GeneratorTest {
 
     @Test
     public void approximatedOperationsTest03() {
-        String expression = "{10}*([0]+[1])+{rand}";
+        String expression = "{10}*([0]+[1])+{rand{10}}";
         expression = Generator.normalizeExpression(expression, new String[]{"1.0", "2.0"});
         double result = Double.parseDouble(Generator.solve(expression));
 
