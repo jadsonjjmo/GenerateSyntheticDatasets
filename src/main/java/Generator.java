@@ -16,12 +16,12 @@ public class Generator {
 
     public static void main(String[] args) {
 
-        if (args.length != 1) {
-            System.err.println("Please enter the following parameters: [CONFIG FILE]");
-            System.exit(1);
-        }
-        final String configFile = args[0];
-//        final String configFile = "config.json";
+//        if (args.length != 1) {
+//            System.err.println("Please enter the following parameters: [CONFIG FILE]");
+//            System.exit(1);
+//        }
+//        final String configFile = args[0];
+        final String configFile = "config.json";
 
         try {
             config = (JSONObject) jsonParser.parse(new FileReader(configFile));
@@ -35,7 +35,8 @@ public class Generator {
             System.exit(1);
         }
 
-        generateNewDataset();
+//        generateNewDataset();
+        System.out.println(getNewAttributes("1\t1"));
     }
 
 
@@ -125,6 +126,7 @@ public class Generator {
         } else {
 
             Stack<Double> stackNumbers = new Stack<>();
+            Stack<Character> stackOperators = new Stack<>();
 
             while (expression.length() > 0) {
 
@@ -146,79 +148,22 @@ public class Generator {
                     double number2;
 
                     switch (character) {
-
                         case 'l':
                             indexStart = expression.indexOf("{");
                             indexEnd = expression.indexOf("}");
                             numberString = expression.substring(indexStart + 1, indexEnd);
                             number1 = Double.parseDouble(numberString);
                             expression = expression.substring(indexEnd + 1);
-                            stackNumbers.push(number1);
+                            stackNumbers.push(executeOperation(number1, 2.0, character));
                             break;
                         case '^':
-                            if (!expression.contains("l")) {
-                                number1 = stackNumbers.pop();
-
-                                indexStart = expression.indexOf("{");
-                                indexEnd = expression.indexOf("}");
-                                numberString = expression.substring(indexStart + 1, indexEnd);
-                                number2 = Double.parseDouble(numberString);
-                                expression = expression.substring(indexEnd + 1);
-
-                                stackNumbers.push(Math.pow(number1, number2));
-                            }
+                            stackOperators.push(character);
                             break;
                         case '*':
-                            if (!expression.contains("l") && !expression.contains("^")) {
-                                number1 = stackNumbers.pop();
-
-                                indexStart = expression.indexOf("{");
-                                indexEnd = expression.indexOf("}");
-                                numberString = expression.substring(indexStart + 1, indexEnd);
-                                number2 = Double.parseDouble(numberString);
-                                expression = expression.substring(indexEnd + 1);
-
-                                stackNumbers.push(number1 * number2);
-                            }
-                            break;
                         case '/':
-                            if (!expression.contains("l") && !expression.contains("^")) {
-                                number1 = stackNumbers.pop();
-
-                                indexStart = expression.indexOf("{");
-                                indexEnd = expression.indexOf("}");
-                                numberString = expression.substring(indexStart + 1, indexEnd);
-                                number2 = Double.parseDouble(numberString);
-                                expression = expression.substring(indexEnd + 1);
-
-                                stackNumbers.push(number1 / number2);
-                            }
-                            break;
                         case '+':
-                            if (!containsPriorityOper(expression)) {
-                                number1 = stackNumbers.pop();
-
-                                indexStart = expression.indexOf("{");
-                                indexEnd = expression.indexOf("}");
-                                numberString = expression.substring(indexStart + 1, indexEnd);
-                                number2 = Double.parseDouble(numberString);
-                                expression = expression.substring(indexEnd + 1);
-
-                                stackNumbers.push(number1 + number2);
-                            }
-                            break;
                         case '-':
-                            if (!containsPriorityOper(expression)) {
-                                number1 = stackNumbers.pop();
-
-                                indexStart = expression.indexOf("{");
-                                indexEnd = expression.indexOf("}");
-                                numberString = expression.substring(indexStart + 1, indexEnd);
-                                number2 = Double.parseDouble(numberString);
-                                expression = expression.substring(indexEnd + 1);
-
-                                stackNumbers.push(number1 - number2);
-                            }
+                            solveOperation(stackNumbers, stackOperators, character);
                             break;
                         default:
                             System.err.println("Operator " + character + " not found!");
@@ -228,6 +173,12 @@ public class Generator {
                 }
             }
 
+            while (!stackOperators.empty()) {
+                double number2 = stackNumbers.pop();
+                double number1 = stackNumbers.pop();
+                stackNumbers.push(executeOperation(number1, number2, stackOperators.pop()));
+            }
+
             expression = "{" + stackNumbers.pop() + "}";
 
         }
@@ -235,9 +186,50 @@ public class Generator {
         return expression;
     }
 
-    public static boolean containsPriorityOper(String expression) {
-        return (expression.contains("l") || expression.contains("^") ||
-                expression.contains("*") || expression.contains("/"));
+    private static void solveOperation(Stack<Double> stackNumbers, Stack<Character> stackOperators, char character) {
+        double number2;
+        double number1;
+        while (!stackOperators.empty() && containsPriorityOper(character, stackOperators.peek())) {
+            number2 = stackNumbers.pop();
+            number1 = stackNumbers.pop();
+            stackNumbers.push(executeOperation(number1, number2, stackOperators.pop()));
+        }
+        stackOperators.push(character);
+    }
+
+    private static boolean containsPriorityOper(char atualOperator, char operatorToCompare) {
+        switch (atualOperator) {
+            case '*':
+            case '/':
+                return (operatorToCompare == '^' || atualOperator == operatorToCompare);
+            case '-':
+            case '+':
+                return (operatorToCompare == '^' || operatorToCompare == '*' ||
+                        operatorToCompare == '/' || atualOperator == operatorToCompare);
+            default:
+                return false;
+        }
+    }
+
+    private static Double executeOperation(Double number1, Double number2, char operator) {
+        switch (operator) {
+            case '^':
+                return Math.pow(number1, number2);
+            case '*':
+                return number1 * number2;
+            case '/':
+                return number1 / number2;
+            case '+':
+                return number1 + number2;
+            case '-':
+                return number1 - number2;
+            case 'l':
+                return Math.log(number1) / Math.log(number2);
+            default:
+                System.err.println("Operator not found!");
+                System.exit(1);
+        }
+        return null;
     }
 
     public static String solve(String expression) {
