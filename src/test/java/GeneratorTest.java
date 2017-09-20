@@ -1,6 +1,8 @@
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Locale;
+
 /**
  * @author Jadson Oliveira <jadsonjjmo@gmail.com>
  */

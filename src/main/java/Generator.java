@@ -4,6 +4,8 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.*;
+import java.text.DecimalFormat;
+import java.util.Locale;
 import java.util.Random;
 import java.util.Stack;
 
@@ -14,6 +16,7 @@ public class Generator {
 
     private static final JSONParser jsonParser = new JSONParser();
     private static JSONObject config = new JSONObject();
+    private static DecimalFormat decimalFormat = new DecimalFormat("0.00000000");
 
     public static void main(String[] args) {
 
@@ -241,7 +244,10 @@ public class Generator {
 
     public static String solve(String expression) {
         String stringValue = solveByPriority(expression);
-        return stringValue.substring(1, stringValue.length() - 1);
+        String newAttribute = decimalFormat.format(Double.parseDouble(
+                stringValue.substring(1, stringValue.length() - 1)));
+        newAttribute = newAttribute.replace(",", ".");
+        return newAttribute;
     }
 
 }
