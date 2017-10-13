@@ -1,11 +1,11 @@
 {
   "origin_dataset": "dataset.csv",
   "target_dataset": "new_dataset.csv",
-  "separator": "\t",
+  "separator": " ",
   "redundant_attributes":[
-     "{1.33}*[0]+{1.34}",
-     "{1.33}*[0]+{1.34}",
-     "{1.33}*([0]+[1])+{1.34}"
+     "{2}*[0]+{1.34}",
+     "{2}*[0]+{1.34}",
+     "{2}*([0]+[1])+{1.34}"
   ],
   "redundant_attributes_linear": [
       "{10} * [0] + {20}",
