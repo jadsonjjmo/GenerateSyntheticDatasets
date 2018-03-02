@@ -235,11 +235,8 @@ public class Generator {
                 return number1 - number2;
             case 'l':
                 Double logResult = Math.log(number1);
-                if (logResult.isNaN()) {
+                if (logResult.isNaN() || logResult.isInfinite()) {
                     logResult = 0.0;
-                }
-                if (logResult.isInfinite()) {
-                    logResult = Double.MAX_VALUE;
                 }
                 return logResult;
             default:
@@ -254,8 +251,7 @@ public class Generator {
 
         //Avoid double NaN or Infinity
         Double value = Double.parseDouble(stringValue.substring(1, stringValue.length() - 1));
-        value = value.isNaN() ? 0.0 : value;
-        value = value.isInfinite() ? Double.MAX_VALUE : value;
+        value = (value.isNaN() || value.isInfinite()) ? 0.0 : value;
 
         String newAttribute = decimalFormat.format(value);
         newAttribute = newAttribute.replace(",", ".");
