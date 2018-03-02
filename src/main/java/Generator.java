@@ -164,7 +164,7 @@ public class Generator {
                             numberString = expression.substring(indexStart + 1, indexEnd);
                             number1 = Double.parseDouble(numberString);
                             expression = expression.substring(indexEnd + 1);
-                            stackNumbers.push(executeOperation(number1, 2.0, character));
+                            stackNumbers.push(executeOperation(number1, -1.0, character));
                             break;
                         case '^':
                             stackOperators.push(character);
@@ -234,7 +234,14 @@ public class Generator {
             case '-':
                 return number1 - number2;
             case 'l':
-                return Math.log(number1) / Math.log(number2);
+                Double logResult = Math.log(number1);
+                if (logResult.isNaN()) {
+                    logResult = 0.0;
+                }
+                if (logResult.isInfinite()) {
+                    logResult = Double.MAX_VALUE;
+                }
+                return logResult;
             default:
                 System.err.println("Operator not found!");
                 System.exit(1);
