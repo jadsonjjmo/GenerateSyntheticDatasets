@@ -251,8 +251,13 @@ public class Generator {
 
     public static String solve(String expression) {
         String stringValue = solveByPriority(expression);
-        String newAttribute = decimalFormat.format(Double.parseDouble(
-                stringValue.substring(1, stringValue.length() - 1)));
+
+        //Avoid double NaN or Infinity
+        Double value = Double.parseDouble(stringValue.substring(1, stringValue.length() - 1);
+        value = value.isNaN() ? 0.0 : value;
+        value = value.isInfinite() ? Double.MAX_VALUE : value;
+
+        String newAttribute = decimalFormat.format(value);
         newAttribute = newAttribute.replace(",", ".");
         return newAttribute;
     }
