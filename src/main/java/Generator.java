@@ -253,7 +253,7 @@ public class Generator {
         String stringValue = solveByPriority(expression);
 
         //Avoid double NaN or Infinity
-        Double value = Double.parseDouble(stringValue.substring(1, stringValue.length() - 1);
+        Double value = Double.parseDouble(stringValue.substring(1, stringValue.length() - 1));
         value = value.isNaN() ? 0.0 : value;
         value = value.isInfinite() ? Double.MAX_VALUE : value;
 
