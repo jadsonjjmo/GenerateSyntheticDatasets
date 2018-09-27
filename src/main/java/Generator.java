@@ -112,7 +112,7 @@ public class Generator {
             final int indexStart = expression.indexOf("{", indexRand);
             final int indexEnd = expression.indexOf("}", indexRand);
             final int randomLimit = Integer.parseInt(expression.substring(indexStart + 1, indexEnd));
-            expression = expression.replaceFirst("rand\\{" + randomLimit + "}", String.valueOf(random.nextInt(randomLimit) + random.nextDouble()));
+            expression = expression.replaceFirst("rand\\{" + randomLimit + "}", String.valueOf(random.nextInt(randomLimit) * (random.nextInt(100) < 50 ? -1 : 1)));
         }
 
         return expression;

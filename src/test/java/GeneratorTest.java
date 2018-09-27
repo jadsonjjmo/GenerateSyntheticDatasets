@@ -93,7 +93,7 @@ public class GeneratorTest {
         String expression = "{10}*l{2.0}+{20}";
         double result = Double.parseDouble(Generator.solve(expression));
 
-        Assert.assertEquals(30.0, result, 0);
+        Assert.assertEquals(10 * Math.log(2) + 20, result, 0.0001);
     }
 
     @Test
@@ -101,7 +101,7 @@ public class GeneratorTest {
         String expression = "{10}*l({1.0}+{2.0})+{20}";
         double result = Double.parseDouble(Generator.solve(expression));
 
-        Assert.assertEquals(35.8496, result, 0.0001);
+        Assert.assertEquals(10 * Math.log(3) + 20, result, 0.0001);
     }
 
     @Test
@@ -139,20 +139,20 @@ public class GeneratorTest {
 
     @Test
     public void approximatedOperationsTest02() {
-        String expression = "{10}*{2.0}+{rand{10}}";
+        String expression = "{10}*{2.0}+{rand{5}}";
         expression = Generator.normalizeExpression(expression, new String[]{"1.0", "2.0"});
         double result = Double.parseDouble(Generator.solve(expression));
 
-        Assert.assertEquals(20.0, result, 10);
+        Assert.assertEquals(20.0, result, 5);
     }
 
     @Test
     public void approximatedOperationsTest03() {
-        String expression = "{10}*([0]+[1])+{rand{10}}";
+        String expression = "{10}*([0]+[1])+({rand{10}}/{100})";
         expression = Generator.normalizeExpression(expression, new String[]{"1.0", "2.0"});
         double result = Double.parseDouble(Generator.solve(expression));
 
-        Assert.assertEquals(30.0, result, 10);
+        Assert.assertEquals(30.0, result, 0.1);
     }
 
 
