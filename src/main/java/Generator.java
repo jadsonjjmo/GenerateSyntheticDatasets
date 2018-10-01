@@ -17,6 +17,7 @@ public class Generator {
     private static final JSONParser jsonParser = new JSONParser();
     private static JSONObject config = new JSONObject();
     private static DecimalFormat decimalFormat = new DecimalFormat("0.00000000");
+    private static Random random = new Random(15L);
 
     public static void main(String[] args) {
 
@@ -97,7 +98,6 @@ public class Generator {
 
     public static String normalizeExpression(String expression, String[] attributes) {
         expression = expression.replace(" ", "");
-        Random random = new Random();
 
         while (expression.contains("[")) {
             final int indexStart = expression.indexOf("[");
@@ -112,7 +112,7 @@ public class Generator {
             final int indexStart = expression.indexOf("{", indexRand);
             final int indexEnd = expression.indexOf("}", indexRand);
             final int randomLimit = Integer.parseInt(expression.substring(indexStart + 1, indexEnd));
-            expression = expression.replaceFirst("rand\\{" + randomLimit + "}", String.valueOf(random.nextInt(randomLimit) * (random.nextInt(100) < 50 ? -1 : 1)));
+            expression = expression.replaceFirst("rand\\{" + randomLimit + "}", String.valueOf(random.nextGaussian() * randomLimit));
         }
 
         return expression;
