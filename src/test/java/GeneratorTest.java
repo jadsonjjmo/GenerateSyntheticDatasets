@@ -105,6 +105,22 @@ public class GeneratorTest {
     }
 
     @Test
+    public void sinOperationsTest01() {
+        String expression = "{10}*s({1.0}+{2.0})+{20}";
+        double result = Double.parseDouble(Generator.solve(expression));
+
+        Assert.assertEquals(10 * Math.sin(Math.toRadians(3)) + 20, result, 0.0001);
+    }
+
+    @Test
+    public void sinOperationsTest02() {
+        String expression = "{10}*s{2.0}+{20}";
+        double result = Double.parseDouble(Generator.solve(expression));
+
+        Assert.assertEquals(10 * Math.sin(Math.toRadians(2)) + 20, result, 0.0001);
+    }
+
+    @Test
     public void exponentialOperationsTest01() {
         String expression = "{10}^{1.0}+{20}";
         double result = Double.parseDouble(Generator.solve(expression));

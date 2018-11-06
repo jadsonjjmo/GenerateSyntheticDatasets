@@ -159,6 +159,7 @@ public class Generator {
 
                     switch (character) {
                         case 'l':
+                        case 's':
                             indexStart = expression.indexOf("{");
                             indexEnd = expression.indexOf("}");
                             numberString = expression.substring(indexStart + 1, indexEnd);
@@ -239,6 +240,12 @@ public class Generator {
                     logResult = 0.0;
                 }
                 return logResult;
+            case 's':
+                Double sinResult = Math.sin(Math.toRadians(number1));
+                if (sinResult.isNaN() || sinResult.isInfinite()) {
+                    sinResult = 0.0;
+                }
+                return sinResult;
             default:
                 System.err.println("Operator not found!");
                 System.exit(1);
