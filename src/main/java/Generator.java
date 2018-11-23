@@ -5,22 +5,20 @@ import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.text.DecimalFormat;
-import java.util.Locale;
 import java.util.Random;
 import java.util.Stack;
 
 /**
  * @author Jadson Oliveira <jadsonjjmo@gmail.com>
  */
-public class Generator {
+class Generator {
 
     private static final JSONParser jsonParser = new JSONParser();
     private static JSONObject config = new JSONObject();
-    private static DecimalFormat decimalFormat = new DecimalFormat("0.00000000");
-    private static Random random = new Random(15L);
+    private static final DecimalFormat decimalFormat = new DecimalFormat("0.00000000");
+    private static final Random random = new Random(15L);
 
-    public static void main(String[] args) {
-
+    public static void main(final String[] args) {
         if (args.length != 1) {
             System.err.println("Please enter the following parameters: [CONFIG FILE]");
             System.exit(1);
@@ -29,11 +27,11 @@ public class Generator {
 
         try {
             config = (JSONObject) jsonParser.parse(new FileReader(configFile));
-        } catch (IOException e) {
+        } catch (final IOException e) {
             System.err.println("Failed to read the config file!");
             e.printStackTrace();
             System.exit(1);
-        } catch (ParseException e) {
+        } catch (final ParseException e) {
             System.err.println("Failed to parse the config file Json!");
             e.printStackTrace();
             System.exit(1);
@@ -44,16 +42,18 @@ public class Generator {
 
 
     private static void generateNewDataset() {
+        //noinspection unchecked
         final String originDataset = (String) config.getOrDefault("origin_dataset", "origin_dataset.csv");
+        //noinspection unchecked
         final String targetDataset = (String) config.getOrDefault("target_dataset", "target_dataset.csv");
 
         try {
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(originDataset)));
-            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(targetDataset)));
+            final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(originDataset)));
+            final BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(targetDataset)));
 
             while (bufferedReader.ready()) {
-                String line = bufferedReader.readLine();
-                String lineWithNewAttributes = getNewAttributes(line);
+                final String line = bufferedReader.readLine();
+                final String lineWithNewAttributes = getNewAttributes(line);
 
                 bufferedWriter.write(line + lineWithNewAttributes);
                 bufferedWriter.newLine();
@@ -62,41 +62,40 @@ public class Generator {
             bufferedWriter.flush();
             bufferedWriter.close();
 
-        } catch (FileNotFoundException e) {
+        } catch (final FileNotFoundException e) {
             System.err.println("Failed to get file!");
             e.printStackTrace();
             System.exit(1);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             System.err.println("Failed to read file!");
             e.printStackTrace();
             System.exit(1);
         }
-
     }
 
 
-    private static String getNewAttributes(String line) {
-
+    private static String getNewAttributes(final String line) {
+        //noinspection unchecked
         final String valueSeparator = (String) config.getOrDefault("separator", "\t");
-        final JSONArray reduntantAttributes = (JSONArray) config.getOrDefault("redundant_attributes", new JSONArray());
+        //noinspection unchecked
+        final JSONArray redundantAttributes = (JSONArray) config.getOrDefault("redundant_attributes", new JSONArray());
 
-        String[] attributesOnLine = line.split(valueSeparator);
-        String newAttributes = "";
+        final String[] attributesOnLine = line.split(valueSeparator);
+        final StringBuilder newAttributes = new StringBuilder();
 
-        for (Object object : reduntantAttributes) {
+        for (final Object object : redundantAttributes) {
             String attributeExpression = (String) object;
             attributeExpression = normalizeExpression(attributeExpression, attributesOnLine);
 
-            newAttributes += valueSeparator;
-            newAttributes += solve(attributeExpression);
+            newAttributes.append(valueSeparator);
+            newAttributes.append(solve(attributeExpression));
         }
 
-        return newAttributes;
-
+        return newAttributes.toString();
     }
 
 
-    public static String normalizeExpression(String expression, String[] attributes) {
+    public static String normalizeExpression(String expression, final String[] attributes) {
         expression = expression.replace(" ", "");
 
         while (expression.contains("[")) {
@@ -130,14 +129,14 @@ public class Generator {
                 indexEnd = expression.indexOf(")", indexEnd + 1);
             }
 
-            String expressionToSolve = expression.substring(indexStart + 1, indexEnd);
-            String expressionSolved = solveByPriority(expressionToSolve);
+            final String expressionToSolve = expression.substring(indexStart + 1, indexEnd);
+            final String expressionSolved = solveByPriority(expressionToSolve);
             expression = expression.replace("(" + expressionToSolve + ")", expressionSolved);
             expression = solveByPriority(expression);
         } else {
 
-            Stack<Double> stackNumbers = new Stack<>();
-            Stack<Character> stackOperators = new Stack<>();
+            final Stack<Double> stackNumbers = new Stack<>();
+            final Stack<Character> stackOperators = new Stack<>();
 
             while (expression.length() > 0) {
 
@@ -145,17 +144,17 @@ public class Generator {
                     final int indexStart = expression.indexOf("{");
                     final int indexEnd = expression.indexOf("}");
                     final String numberString = expression.substring(indexStart + 1, indexEnd);
-                    double number = Double.parseDouble(numberString);
+                    final double number = Double.parseDouble(numberString);
                     expression = expression.substring(indexEnd + 1);
                     stackNumbers.push(number);
                 } else {
-                    char character = expression.charAt(0);
+                    final char character = expression.charAt(0);
                     expression = expression.substring(1);
 
-                    int indexStart;
-                    int indexEnd;
-                    String numberString;
-                    double number1;
+                    final int indexStart;
+                    final int indexEnd;
+                    final String numberString;
+                    final double number1;
 
                     switch (character) {
                         case 'l':
@@ -185,8 +184,8 @@ public class Generator {
             }
 
             while (!stackOperators.empty()) {
-                double number2 = stackNumbers.pop();
-                double number1 = stackNumbers.pop();
+                final double number2 = stackNumbers.pop();
+                final double number1 = stackNumbers.pop();
                 stackNumbers.push(executeOperation(number1, number2, stackOperators.pop()));
             }
 
@@ -197,7 +196,7 @@ public class Generator {
         return expression;
     }
 
-    private static void solveOperation(Stack<Double> stackNumbers, Stack<Character> stackOperators, char character) {
+    private static void solveOperation(final Stack<Double> stackNumbers, final Stack<Character> stackOperators, final char character) {
         double number2;
         double number1;
         while (!stackOperators.empty() && isPriority(character, stackOperators.peek())) {
@@ -208,21 +207,21 @@ public class Generator {
         stackOperators.push(character);
     }
 
-    private static boolean isPriority(char atualOperator, char operatorToCompare) {
-        switch (atualOperator) {
+    private static boolean isPriority(final char currentOperator, final char operatorToCompare) {
+        switch (currentOperator) {
             case '*':
             case '/':
-                return (operatorToCompare == '^' || atualOperator == operatorToCompare);
+                return (operatorToCompare == '^' || currentOperator == operatorToCompare);
             case '-':
             case '+':
                 return (operatorToCompare == '^' || operatorToCompare == '*' ||
-                        operatorToCompare == '/' || atualOperator == operatorToCompare);
+                        operatorToCompare == '/' || currentOperator == operatorToCompare);
             default:
                 return false;
         }
     }
 
-    private static Double executeOperation(Double number1, Double number2, char operator) {
+    private static Double executeOperation(final Double number1, final Double number2, final char operator) {
         switch (operator) {
             case '^':
                 return Math.pow(number1, number2);
@@ -253,8 +252,8 @@ public class Generator {
         return null;
     }
 
-    public static String solve(String expression) {
-        String stringValue = solveByPriority(expression);
+    public static String solve(final String expression) {
+        final String stringValue = solveByPriority(expression);
 
         //Avoid double NaN or Infinity
         Double value = Double.parseDouble(stringValue.substring(1, stringValue.length() - 1));
