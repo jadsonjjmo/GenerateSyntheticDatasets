@@ -55,6 +55,14 @@ public class GeneratorTest {
     }
 
     @Test
+    public void linearOperationsTest07() {
+        final String expression = "{10}*(({1.0}/{2.0})+{3.5})+{20}";
+        final double result = Double.parseDouble(Generator.solve(expression));
+
+        Assert.assertEquals(60.0, result, 0);
+    }
+
+    @Test
     public void quadraticOperationsTest01() {
         final String expression = "{10}*{1.0}^{2}+{20}";
         final double result = Double.parseDouble(Generator.solve(expression));
