@@ -178,6 +178,7 @@ class Generator {
                         default:
                             System.err.println("Operator " + character + " not found!");
                             System.exit(1);
+                            break;
 
                     }
                 }
