@@ -43,7 +43,7 @@ Or run the [script.sh](/script.sh) file.
 
 ## How to test
 
-This tool is composed for a set for unit tests, created with the [JUnit](https://pt.wikipedia.org/wiki/JUnit) library.
+This tool is composed for a set of unit tests, created with the [JUnit](https://pt.wikipedia.org/wiki/JUnit) library.
 
 To run the existing unit tests, with the Apache Maven installed correctly, just run the following command:
 
