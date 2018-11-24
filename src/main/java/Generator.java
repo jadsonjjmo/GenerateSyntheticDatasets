@@ -40,7 +40,9 @@ class Generator {
         generateNewDataset();
     }
 
-
+    /**
+     * This method will read the origin dataset and write a new dataset file with the redundant expressions.
+     */
     private static void generateNewDataset() {
         //noinspection unchecked
         final String originDataset = (String) config.getOrDefault("origin_dataset", "origin_dataset.csv");
@@ -74,6 +76,12 @@ class Generator {
     }
 
 
+    /**
+     * This method will read each line of the origin dataset and will create its redundant attributes.
+     *
+     * @param line A specific line of the origin dataset.
+     * @return A new line containing the original and redundant attributes.
+     */
     private static String getNewAttributes(final String line) {
         //noinspection unchecked
         final String valueSeparator = (String) config.getOrDefault("separator", "\t");
@@ -95,6 +103,13 @@ class Generator {
     }
 
 
+    /**
+     * This method will normalize the expressions removing white-spaces and replacing random and attribute numbers on expression.
+     *
+     * @param expression A specific expression to be normalized.
+     * @param attributes A list of attributes to be replaced in the expression.
+     * @return A normalized expression.
+     */
     public static String normalizeExpression(String expression, final String[] attributes) {
         expression = expression.replace(" ", "");
 
@@ -118,6 +133,12 @@ class Generator {
     }
 
 
+    /**
+     * This method will parse the expression and solve it following the operators priority.
+     *
+     * @param expression The expression to be solved.
+     * @return The solved expression.
+     */
     private static String solveByPriority(String expression) {
         if (expression.contains("(")) {
             final int indexStart = expression.indexOf("(");
@@ -197,6 +218,13 @@ class Generator {
         return expression;
     }
 
+    /**
+     * This method will solve a specific operation requested by the expression.
+     *
+     * @param stackNumbers   A stack of numbers in the expression.
+     * @param stackOperators A stack of operators in the expression.
+     * @param character      The char equivalent to solve the operation.
+     */
     private static void solveOperation(final Stack<Double> stackNumbers, final Stack<Character> stackOperators, final char character) {
         double number2;
         double number1;
@@ -208,6 +236,13 @@ class Generator {
         stackOperators.push(character);
     }
 
+    /**
+     * Verify if the operator is priority.
+     *
+     * @param currentOperator   current operator to compare with others.
+     * @param operatorToCompare operator to do the comparision.
+     * @return True if the operatorToCompare has priority or False, otherwise.
+     */
     private static boolean isPriority(final char currentOperator, final char operatorToCompare) {
         switch (currentOperator) {
             case '*':
@@ -222,6 +257,14 @@ class Generator {
         }
     }
 
+    /**
+     * This method will execute a specific mathematical operation.
+     *
+     * @param number1  Number one in the operation.
+     * @param number2  Number two int the operation.
+     * @param operator Operator to do the mathematical operation.
+     * @return A double number with the result of the operation.
+     */
     private static Double executeOperation(final Double number1, final Double number2, final char operator) {
         switch (operator) {
             case '^':
@@ -253,6 +296,12 @@ class Generator {
         return null;
     }
 
+    /**
+     * This method will read an expression and return its result.
+     *
+     * @param expression Expression to be solved.
+     * @return Result of the expression.
+     */
     public static String solve(final String expression) {
         final String stringValue = solveByPriority(expression);
 
