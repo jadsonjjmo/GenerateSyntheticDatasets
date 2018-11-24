@@ -1,5 +1,5 @@
 # GenerateSyntheticDatasets
-A tool to generate a new dataset containing redundant attributes from other dataset. It can be used to evaluate [dimensionality reduction](https://en.wikipedia.org/wiki/Dimensionality_reduction) algorithms and the influence of curse of high-dimensionality on their results.
+A tool to generate a new dataset containing redundant attributes (by mathematical expressions) from other dataset. It can be used to evaluate [dimensionality reduction](https://en.wikipedia.org/wiki/Dimensionality_reduction) algorithms and the influence of curse of high-dimensionality on their results.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE.md)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/832b77c7785745ebb60ca538cabc0640)](https://www.codacy.com/app/jadsonjjmo/GenerateSyntheticDatasets?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=jadsonjjmo/GenerateSyntheticDatasets&amp;utm_campaign=Badge_Grade)
