@@ -41,7 +41,7 @@ Or run the [script.sh](/script.sh) file.
 ./script.sh
 ```
 
-### How to test
+## How to test
 
 This tool is composed for a set for unit tests, created with the [JUnit](https://pt.wikipedia.org/wiki/JUnit) library.
 
