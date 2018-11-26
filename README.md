@@ -31,6 +31,11 @@ Here's a basic example of the configuration file formatting:
 }
 ```
 
+- Constant Syntaxe = {Constant}
+- Attribute reference = [Attribute index]
+- Supported operators = {`+`, `-`, `*`, `/`, `^`, `rand`, `l`{log}, `s`{sin}}
+
+
 After entering all the required settings, run the following command:
 
 `java -jar target/GenerateSyntheticDataset-1.0-SNAPSHOT-jar-with-dependencies.jar <path-of-config-file>.json`
@@ -47,4 +52,6 @@ This tool is composed for a set of unit tests, created with the [JUnit](https://
 
 To run the existing unit tests, with the Apache Maven installed correctly, just run the following command:
 
-`mvn test`
+```shell
+mvn test
+```
